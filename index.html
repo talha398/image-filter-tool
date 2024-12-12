@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Filter Tool</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .tool-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    #uploadImage {
+      display: block;
+      margin: 15px auto;
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #output {
+      max-width: 100%;
+      margin: 20px 0;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .filters {
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      background: #007BFF;
+      color: white;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    #downloadBtn {
+      display: none;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    #downloadBtn:hover {
+      background-color: #218838;
+    }
+
+    .description {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tool-container">
+    <h1>Image Filter Tool</h1>
+    <p>
+      Use this tool to apply stunning filters to your images and download them effortlessly. Powered by 
+      <a href="https://meituapksite.com" target="_blank">meituapksite.com</a>.
+    </p>
+
+    <input type="file" id="uploadImage" accept="image/*" />
+
+    <div id="filters" class="filters">
+      <button onclick="applyFilter('grayscale(100%)')">Grayscale</button>
+      <button onclick="applyFilter('sepia(100%)')">Sepia</button>
+      <button onclick="applyFilter('invert(100%)')">Invert</button>
+      <button onclick="applyFilter('contrast(200%)')">High Contrast</button>
+    </div>
+
+    <img id="output" />
+
+    <a id="downloadBtn" download="filtered-image.png">Download Image</a>
+  </div>
+
+  <script>
+    const uploadInput = document.getElementById('uploadImage');
+    const outputImage = document.getElementById('output');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    uploadInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (event) {
+        outputImage.src = event.target.result;
+        outputImage.style.filter = ''; // Reset filter when new image is uploaded
+        downloadBtn.style.display = 'none'; // Hide download button until a filter is applied
+      };
+
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function applyFilter(filter) {
+      outputImage.style.filter = filter;
+
+      // Show download button
+      downloadBtn.style.display = 'inline-block';
+
+      // Convert the filtered image to a downloadable format
+      setTimeout(() => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = outputImage.naturalWidth;
+        canvas.height = outputImage.naturalHeight;
+        ctx.filter = filter;
+        ctx.drawImage(outputImage, 0, 0, canvas.width, canvas.height);
+
+        downloadBtn.href = canvas.toDataURL('image/png');
+      }, 100);
+    }
+  </script>
+
+</body>
+</html>
